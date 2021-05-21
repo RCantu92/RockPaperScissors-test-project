@@ -17,16 +17,19 @@ describe("Rock, Paper, Scissors contract", function() {
         deployedGame = await rockPaperScissors.deploy();
     });
 
-    it("should allow a player to approve $LINK to be sent", async function() {
+    it("should allow a player to approve contract to hold their $LINK", async function() {
         // firstAccount approves contract for 1 $LINK
         await deployedGame.approveLink();
+        console.log(firstAccount.address);
 
         // secondAccount approves contract for 1 $LINK
-        // await deployedGame.approveLink().connect(secondAccount);
+        await deployedGame.connect(secondAccount).approveLink();
+        console.log(secondAccount.address);
 
         // Confirm accounts have approved contract for 1 $LINK
         expect(await deployedGame._approvedLink(firstAccount.address)).to.equal(true);
-        // expect(approvedLink(secondAccount.address)).to.equal(true);
+        // console.log(await deployedGame.playerNumber);
+        expect(await deployedGame._approvedLink(secondAccount.address)).to.equal(true);
 
     });
 })

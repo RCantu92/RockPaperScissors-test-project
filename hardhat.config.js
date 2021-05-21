@@ -1,7 +1,8 @@
 require("@nomiclabs/hardhat-waffle");
 require("dotenv").config({path: "./.env"});
 const infuraKovan = process.env.INFURA_KOVAN;
-const kovanPrivateKey = process.env.KOVAN_PRIVATE_KEY;
+const kovanPrivateKeyOne = process.env.KOVAN_PRIVATE_KEY_01;
+const kovanPrivateKeyTwo = process.env.KOVAN_PRIVATE_KEY_02;
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -12,7 +13,7 @@ const kovanPrivateKey = process.env.KOVAN_PRIVATE_KEY;
     },
     kovan: {
       url: `https://kovan.infura.io/v3/${infuraKovan}`,
-      accounts: [`0x${kovanPrivateKey}`]
+      accounts: [`0x${kovanPrivateKeyOne}`, `0x${kovanPrivateKeyTwo}`]
     }
   },
   solidity: {

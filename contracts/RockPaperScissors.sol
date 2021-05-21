@@ -26,7 +26,7 @@ contract RockPaperScissors {
         bool playerEntered;
     }
 
-    uint playerNumber;
+    uint public playerNumber;
     // MAKE SURE STRUCT IS NOT PUBLIC
     mapping(uint => Player) players;
 
