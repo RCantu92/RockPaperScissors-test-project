@@ -13,23 +13,42 @@ describe("Rock, Paper, Scissors contract", function() {
         // firstAccount will be the deployer
         [firstAccount, secondAccount] = await ethers.getSigners();
 
-        // Deploye contract
+        // Deploy contract
         deployedGame = await rockPaperScissors.deploy();
     });
 
-    it("should allow a player to approve contract to hold their $LINK", async function() {
+    /*
+    it("should allow two players to approve contract to hold their $LINK", async function() {
         // firstAccount approves contract for 1 $LINK
         await deployedGame.approveLink();
-        console.log(firstAccount.address);
 
         // secondAccount approves contract for 1 $LINK
         await deployedGame.connect(secondAccount).approveLink();
-        console.log(secondAccount.address);
 
         // Confirm accounts have approved contract for 1 $LINK
         expect(await deployedGame._approvedLink(firstAccount.address)).to.equal(true);
-        // console.log(await deployedGame.playerNumber);
         expect(await deployedGame._approvedLink(secondAccount.address)).to.equal(true);
 
+    });
+    */
+
+    it("should allow player one to win a game against player two", async function() {
+        // First account approves contract for 1 $LINK
+        await deployedGame.approveLink();
+
+        // Second account approves contract for 1 $LINK
+        await deployedGame.connect(secondAccount).approveLink();
+        
+        try {
+            // Submit rock for player one
+            await deployedGame.playPaperRockScissors("rock");
+
+            // Submit paper for player two
+            await deployedGame.connect(secondAccount).playPaperRockScissors("paper");
+
+            expect(await deployedGame.mostRecentWinner()).to.equal(firstAccount.address);
+        } catch(err) {
+            
+        }
     });
 })

@@ -14,10 +14,23 @@ contract RockPaperScissors {
     // Mapping storing which address have approved $LINK
     mapping(address => bool) public approvedLink;
 
+    // FUNCTION ONLY FOR TESTING
+    // (COULD NOT CALL MAPPING WITH ETHERS,
+    // HENCE THE GETTER FUNCTION)
     function _approvedLink(address _approver) public view returns(bool) {
         return approvedLink[_approver];
     }
 
+    // NEED TO CLEAR STRUCTS FOR NEXT GAME
+    // OR USE A NEW METHOD OF HOW TO CREATE NEW GAMES
+    // (MAYBE USE THE ODDS AND EVENS?)
+
+    // KEEP THIS ONLY FOR THE TEST?
+    address _mostRecentWinner;
+
+    function mostRecentWinner() public view returns(address) {
+        return _mostRecentWinner;
+    }
 
     struct Player {
         uint playerNumber;
@@ -44,24 +57,40 @@ contract RockPaperScissors {
     }
 
     // function that housed rock, paper,scissors logic
+    // then resets the number of players
     function gameLogic() internal {
         // Outcomes for if first player chose "rock"
         if(areItemsAreEqual(players[0].chosenItem, "rock") == true) {
             if(areItemsAreEqual(players[1].chosenItem, "paper") == true) {
+                // reset number of players
+                playerNumber = 0;
+                // Store most recent winner
+                _mostRecentWinner = players[1].playerAddress;
                 // Player Two wins 1 $LINK
                 kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
             } else if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
+                // reset number of players
+                playerNumber = 0;
+                // Store most recent winner
+                _mostRecentWinner = players[0].playerAddress;
                 // Player One wins 1 $LINK
                 kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
-            } else {
                 // Tie, both players chose "rock"
             }
         // Outcomes for if first player chose "paper"
         } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
             if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
+                // reset number of players
+                playerNumber = 0;
+                // Store most recent winner
+                _mostRecentWinner = players[1].playerAddress;
                 // Player Two wins 1 $LINK
                 kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
             } else if(areItemsAreEqual(players[1].chosenItem, "rock")) {
+                // reset number of players
+                playerNumber = 0;
+                // Store most recent winner
+                _mostRecentWinner = players[0].playerAddress;
                 // Player One wins 1 $LINK
                 kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
             } else {
@@ -70,9 +99,17 @@ contract RockPaperScissors {
         // Outcome for if first player chose "scissors"
         } else {
             if(areItemsAreEqual(players[1].chosenItem, "rock")) {
+                // reset number of players
+                playerNumber = 0;
+                // Store most recent winner
+                _mostRecentWinner = players[1].playerAddress;
                 // Player Two wins 1 $LINK
                 kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
             } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
+                // reset number of players
+                playerNumber = 0;
+                // Store most recent winner
+                _mostRecentWinner = players[1].playerAddress;
                 // Player One wins 1 $LINK
                 kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
             } else {
