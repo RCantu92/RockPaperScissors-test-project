@@ -2,7 +2,6 @@
 
 pragma solidity 0.8.4;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract RockPaperScissors {
@@ -13,7 +12,11 @@ contract RockPaperScissors {
     ERC20 kovanLink = ERC20(0xa36085F69e2889c224210F603D836748e7dC0088);
 
     // Mapping storing which address have approved $LINK
-    mapping(address => bool) internal approvedLink;
+    mapping(address => bool) public approvedLink;
+
+    function _approvedLink(address _approver) public view returns(bool) {
+        return approvedLink[_approver];
+    }
 
 
     struct Player {
@@ -30,7 +33,7 @@ contract RockPaperScissors {
     // Approve contract to handle (kovan) $LINK
     // on user's behalf
     function approveLink() public {
-        kovanLink.approve(msg.sender, 1000000000000000000);
+        kovanLink.approve(msg.sender, 500000000000000000);
         approvedLink[msg.sender] = true;
     }
 
@@ -45,33 +48,33 @@ contract RockPaperScissors {
         // Outcomes for if first player chose "rock"
         if(areItemsAreEqual(players[0].chosenItem, "rock") == true) {
             if(areItemsAreEqual(players[1].chosenItem, "paper") == true) {
-                // Player Two wins two $LINK
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 2000000000000000000);
+                // Player Two wins 1 $LINK
+                kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
             } else if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
-                // Player One wins two $LINK
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 2000000000000000000);
+                // Player One wins 1 $LINK
+                kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
             } else {
                 // Tie, both players chose "rock"
             }
         // Outcomes for if first player chose "paper"
         } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
             if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
-                // Player Two wins
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 2000000000000000000);
+                // Player Two wins 1 $LINK
+                kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
             } else if(areItemsAreEqual(players[1].chosenItem, "rock")) {
-                // Player One wins
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 2000000000000000000);
+                // Player One wins 1 $LINK
+                kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
             } else {
                 // Tie, both players chose "paper"
             }
         // Outcome for if first player chose "scissors"
         } else {
             if(areItemsAreEqual(players[1].chosenItem, "rock")) {
-                // Player Two wins
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 2000000000000000000);
+                // Player Two wins 1 $LINK
+                kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
             } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
-                // Player One wins
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 2000000000000000000);
+                // Player One wins 1 $LINK
+                kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
             } else {
                 // Tie, both players chose "scissors"
             }
@@ -100,7 +103,7 @@ contract RockPaperScissors {
         );
 
         // Transfer one $LINK from player to contract address
-        kovanLink.transferFrom(msg.sender, address(this), 1000000000000000000);
+        kovanLink.transferFrom(msg.sender, address(this), 500000000000000000);
 
         // Check to see if a player has already
         // submitted item, if not, that player is
