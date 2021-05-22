@@ -2,7 +2,6 @@
 pragma solidity 0.8.4;
 
 // PERHAPS NOT NEEDED?
-// import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // ONLY FOR TESTING
@@ -15,14 +14,6 @@ contract RockPaperScissors {
     // token on the kovan Ethereum testnet
     IERC20 public kovanLink = IERC20(0xa36085F69e2889c224210F603D836748e7dC0088);
 
-    /*
-    USED THIS FUNCTION TO TEST ABILITY TO
-    TRANSFER $LINK TO RECEPIENT
-    function transferLink(address _to, uint _amount) public {
-        kovanLink.transferFrom(msg.sender, _to, _amount);
-    }
-    */
-
     // KEEP THIS ONLY FOR THE TEST?
     address _mostRecentWinner;
     // GETTER FUNCTION BECAUSE ETHERS WOULDN'T CALL
@@ -31,20 +22,13 @@ contract RockPaperScissors {
         return _mostRecentWinner;
     }
 
-    /*
-    // Mapping storing which address have approved $LINK
-    mapping(address => bool) public approvedLink;
-    */
-
-    uint public playerNumber;
-    // MAKE SURE STRUCT IS NOT PUBLIC
-    mapping(uint => Player) players;
+    uint internal playerNumber;
+    mapping(uint => Player) internal players;
 
     struct Player {
         uint playerNumber;
         address payable playerAddress;
         string chosenItem;
-        bool playerEntered;
     }
 
     /*
@@ -80,11 +64,6 @@ contract RockPaperScissors {
     // Run paper rock scissors logic.
     function playPaperRockScissors(string memory _chosenItem) public payable returns (string memory) {
 
-        /*
-        // Approve to use (kovan) $LINK token in this game
-        require(approvedLink[msg.sender] == true, "You have not approved contract for $LINK");
-        */
-
         // Require players submitted appropriate item
         require(
             areItemsAreEqual(_chosenItem, "rock") == true ||
@@ -93,92 +72,89 @@ contract RockPaperScissors {
             "You have either not input an appropriate item or item name not written in lowercase."
         );
 
-        // Transfer one $LINK from player to contract address
-        kovanLink.transfer(address(this), 50000000000);
+        // TEST TO SEE WHO MSG.SENDER IS DELETE
+        console.log(msg.sender);
+        // Transfer a portion of one $LINK from player to contract address
+        kovanLink.transferFrom(msg.sender, address(this), 50000000);
 
         // Check to see if a player has already
         // submitted item, if not, that player is
         // player one. If so, that player is
         // player two and game logic carries out.
         if(playerNumber > 0) {
-            players[playerNumber] = Player(playerNumber, payable(msg.sender), _chosenItem, true);
+            players[playerNumber] = Player(playerNumber, payable(msg.sender), _chosenItem);
             playerNumber ++;
             return "You are player two";
 
             // Call function that has paper, rock, scissors, logic
             gameLogic();
         } else {
-            players[playerNumber] = Player(playerNumber, payable(msg.sender), _chosenItem, true);
+            players[playerNumber] = Player(playerNumber, payable(msg.sender), _chosenItem);
             playerNumber ++;
             return "You are player one";
         }
     }
 
-    // function that housed rock, paper,scissors logic
+    // Function that houses rock, paper, scissors logic
     // then resets the number of players
     function gameLogic() internal {
         // Outcomes for if first player chose "rock"
         if(areItemsAreEqual(players[0].chosenItem, "rock") == true) {
+            // If then player two chose "paper"
             if(areItemsAreEqual(players[1].chosenItem, "paper") == true) {
-                // reset number of players
-                playerNumber = 0;
-                // Store most recent winner
-                _mostRecentWinner = players[1].playerAddress;
-                // Player Two wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 50000000000);
+                disperseWinnings(players[1].playerAddress);
+            // If then player two chose "scissors"
             } else if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
-                // reset number of players
-                playerNumber = 0;
-                // Store most recent winner
-                _mostRecentWinner = players[0].playerAddress;
-                // Player One wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 50000000000);
+                disperseWinnings(players[0].playerAddress);
+            // If then player also chose "rock"
+            } else {
                 // Tie, both players chose "rock"
             }
         // Outcomes for if first player chose "paper"
         } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
+            // If then player two chose scissors
             if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
-                // reset number of players
-                playerNumber = 0;
-                // Store most recent winner
-                _mostRecentWinner = players[1].playerAddress;
-                // Player Two wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 50000000000);
+                disperseWinnings(players[1].playerAddress);
+            // If then player two chose "rock"
             } else if(areItemsAreEqual(players[1].chosenItem, "rock")) {
-                // reset number of players
-                playerNumber = 0;
-                // Store most recent winner
-                _mostRecentWinner = players[0].playerAddress;
-                // Player One wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 50000000000);
+                disperseWinnings(players[0].playerAddress);
+            // If then player also chose "paper"
             } else {
                 // Tie, both players chose "paper"
             }
         // Outcome for if first player chose "scissors"
         } else {
+            // If then player two chose "rock"
             if(areItemsAreEqual(players[1].chosenItem, "rock")) {
-                // reset number of players
-                playerNumber = 0;
-                // Store most recent winner
-                _mostRecentWinner = players[1].playerAddress;
-                // Player Two wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 50000000000);
+                disperseWinnings(players[1].playerAddress);
+            // If then player two chose "paper"
             } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
-                // reset number of players
-                playerNumber = 0;
-                // Store most recent winner
-                _mostRecentWinner = players[1].playerAddress;
-                // Player One wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 50000000000);
+                disperseWinnings(players[0].playerAddress);
+            // If then player also chose "scissors"
             } else {
                 // Tie, both players chose "scissors"
             }
         }
     }
 
-    // function that handles the hashing
+    // Function that would appropriately
+    // distribute the winnings to the winner
+    function disperseWinnings(address _winner) internal {
+        // Reset number of players
+        playerNumber = 0;
+        // Store most recent winner
+        _mostRecentWinner = _winner;
+        // Player two wins the $LINK
+        kovanLink.transferFrom(address(this), _winner, 100000000);
+    }
+
+    // function that compares the
+    // hashes of two different strings
     function areItemsAreEqual(string memory _playerChosenItem, string memory _comparedItem) internal pure returns(bool) {
-        bool _areItemsAreEqual = keccak256(abi.encode(_playerChosenItem)) == keccak256(abi.encode(_comparedItem));
-        return _areItemsAreEqual;
+        if(keccak256(abi.encode(_playerChosenItem)) == keccak256(abi.encode(_comparedItem))) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

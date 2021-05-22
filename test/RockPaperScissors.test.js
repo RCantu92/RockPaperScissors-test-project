@@ -4,6 +4,10 @@ const { isCallTrace } = require("hardhat/internal/hardhat-network/stack-traces/m
 const BigNumber = require('bignumber.js');
 
 describe("Rock, Paper, Scissors contract", function() {
+
+    // Adjusting time out period for tests
+    // (was erroring out at 20000ms)
+    this.timeout(100000);
     
     // Deploy contract before testing
     before(async function() {
@@ -23,21 +27,12 @@ describe("Rock, Paper, Scissors contract", function() {
         // to handle their kovan $LINK
         // (provided allowance is restricted by javascript, currently.
         // will implement BigNumber later to use more $LINK)
-        await kovanLink.approve(deployedGame.address, 50000000000);
-        await kovanLink.connect(secondAccount).approve(deployedGame.address, 50000000000);
+        await kovanLink.approve(deployedGame.address, 100000000);
+        await kovanLink.connect(secondAccount).approve(deployedGame.address, 100000000);
     });
 
     
     it("should allow player one to win a game against player two", async function() {
-        
-        /*
-        // LOG ACCOUNTS $LINK BALANCE
-        linkBalanceOne = BigNumber(await kovanLink.balanceOf(firstAccount.address));
-        linkBalanceTwo = BigNumber(await kovanLink.connect(secondAccount).linkBalance(secondAccount.address));
-
-        console.log(`Kovan $LINK balance of account one ${linkBalanceOne}`);
-        console.log(`Kovan $LINK balance of account two ${linkBalanceTwo}`);
-        */
         
         try {
             // Submit rock for player one
@@ -45,11 +40,6 @@ describe("Rock, Paper, Scissors contract", function() {
 
             // Submit paper for player two
             await deployedGame.connect(secondAccount).playPaperRockScissors("paper");
-            
-            /*
-            console.log(linkBalanceOne);
-            console.log(linkBalanceOne);
-            */
 
             expect(await deployedGame.mostRecentWinner()).to.equal(firstAccount.address);
         } catch(err) {
