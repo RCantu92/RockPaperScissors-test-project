@@ -2,7 +2,7 @@
 pragma solidity 0.8.4;
 
 // PERHAPS NOT NEEDED?
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+// import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // ONLY FOR TESTING
@@ -31,8 +31,10 @@ contract RockPaperScissors {
         return _mostRecentWinner;
     }
 
+    /*
     // Mapping storing which address have approved $LINK
     mapping(address => bool) public approvedLink;
+    */
 
     uint public playerNumber;
     // MAKE SURE STRUCT IS NOT PUBLIC
@@ -45,13 +47,16 @@ contract RockPaperScissors {
         bool playerEntered;
     }
 
+    /*
     // FUNCTION ONLY FOR TESTING
     // (COULD NOT CALL MAPPING WITH ETHERS,
     // HENCE THE GETTER FUNCTION)
     function _approvedLink(address _approver) public view returns(bool) {
         return approvedLink[_approver];
     }
+    */
 
+    /*
     // Approve contract to handle (kovan) $LINK
     // on user's behalf
     function approveLink() public {
@@ -63,6 +68,7 @@ contract RockPaperScissors {
 
         kovanLink.transfer(address(this), 3000000000000000000);
     }
+    */
 
     // Play by submitting one of the
     // following:
@@ -74,8 +80,10 @@ contract RockPaperScissors {
     // Run paper rock scissors logic.
     function playPaperRockScissors(string memory _chosenItem) public payable returns (string memory) {
 
+        /*
         // Approve to use (kovan) $LINK token in this game
         require(approvedLink[msg.sender] == true, "You have not approved contract for $LINK");
+        */
 
         // Require players submitted appropriate item
         require(
@@ -86,7 +94,7 @@ contract RockPaperScissors {
         );
 
         // Transfer one $LINK from player to contract address
-        kovanLink.transferFrom(msg.sender, address(this), 500000000000000000);
+        kovanLink.transfer(address(this), 50000000000);
 
         // Check to see if a player has already
         // submitted item, if not, that player is
@@ -117,14 +125,14 @@ contract RockPaperScissors {
                 // Store most recent winner
                 _mostRecentWinner = players[1].playerAddress;
                 // Player Two wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
+                kovanLink.transferFrom(address(this), players[1].playerAddress, 50000000000);
             } else if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
                 // reset number of players
                 playerNumber = 0;
                 // Store most recent winner
                 _mostRecentWinner = players[0].playerAddress;
                 // Player One wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
+                kovanLink.transferFrom(address(this), players[0].playerAddress, 50000000000);
                 // Tie, both players chose "rock"
             }
         // Outcomes for if first player chose "paper"
@@ -135,14 +143,14 @@ contract RockPaperScissors {
                 // Store most recent winner
                 _mostRecentWinner = players[1].playerAddress;
                 // Player Two wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
+                kovanLink.transferFrom(address(this), players[1].playerAddress, 50000000000);
             } else if(areItemsAreEqual(players[1].chosenItem, "rock")) {
                 // reset number of players
                 playerNumber = 0;
                 // Store most recent winner
                 _mostRecentWinner = players[0].playerAddress;
                 // Player One wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
+                kovanLink.transferFrom(address(this), players[0].playerAddress, 50000000000);
             } else {
                 // Tie, both players chose "paper"
             }
@@ -154,14 +162,14 @@ contract RockPaperScissors {
                 // Store most recent winner
                 _mostRecentWinner = players[1].playerAddress;
                 // Player Two wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[1].playerAddress, 1000000000000000000);
+                kovanLink.transferFrom(address(this), players[1].playerAddress, 50000000000);
             } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
                 // reset number of players
                 playerNumber = 0;
                 // Store most recent winner
                 _mostRecentWinner = players[1].playerAddress;
                 // Player One wins 1 $LINK
-                kovanLink.transferFrom(address(this), players[0].playerAddress, 1000000000000000000);
+                kovanLink.transferFrom(address(this), players[0].playerAddress, 50000000000);
             } else {
                 // Tie, both players chose "scissors"
             }

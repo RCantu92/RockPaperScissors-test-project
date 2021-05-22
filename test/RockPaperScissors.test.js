@@ -27,58 +27,17 @@ describe("Rock, Paper, Scissors contract", function() {
         await kovanLink.connect(secondAccount).approve(deployedGame.address, 50000000000);
     });
 
-    it ("should allow a player to transfer $LINK to other player", async function() {
-        // First account approves contract for 1 $LINK
-        // await deployedGame.approveLink(deployedGame.address);
-
-        // First account approves contract for 1 $LINK
-        // await deployedGame.approveLink();
-
-        // Transfer some $LINK to the game contrac
-        await deployedGame.transferLink(secondAccount.address, 50000000000);
-
-        /*
-        try {
-            // First account approves contract for 1 $LINK
-            await deployedGame.approveLink();
-
-            // Transfer some $LINK to the game contrac
-            await deployedGame.transferLink(secondAccount.address);
-        } catch(err) {
-            console.log("It errored out.");
-        }
-        */
-    });
-
-    /*
-    it("should allow two players to approve contract to hold their $LINK", async function() {
-        // firstAccount approves contract for 1 $LINK
-        await deployedGame.approveLink();
-
-        // secondAccount approves contract for 1 $LINK
-        await deployedGame.connect(secondAccount).approveLink();
-
-        // Confirm accounts have approved contract for 1 $LINK
-        expect(await deployedGame._approvedLink(firstAccount.address)).to.equal(true);
-        expect(await deployedGame._approvedLink(secondAccount.address)).to.equal(true);
-
-    });
-    */
-
-    /*
+    
     it("should allow player one to win a game against player two", async function() {
-        // First account approves contract for 1 $LINK
-        await deployedGame.approveLink();
-
-        // Second account approves contract for 1 $LINK
-        await deployedGame.connect(secondAccount).approveLink();
-
+        
+        /*
         // LOG ACCOUNTS $LINK BALANCE
-        linkBalanceOne = BigNumber(await deployedGame.linkBalance());
-        linkBalanceTwo = BigNumber(await deployedGame.connect(secondAccount).linkBalance());
+        linkBalanceOne = BigNumber(await kovanLink.balanceOf(firstAccount.address));
+        linkBalanceTwo = BigNumber(await kovanLink.connect(secondAccount).linkBalance(secondAccount.address));
 
-        console.log(linkBalanceOne);
-        console.log(linkBalanceTwo);
+        console.log(`Kovan $LINK balance of account one ${linkBalanceOne}`);
+        console.log(`Kovan $LINK balance of account two ${linkBalanceTwo}`);
+        */
         
         try {
             // Submit rock for player one
@@ -86,17 +45,16 @@ describe("Rock, Paper, Scissors contract", function() {
 
             // Submit paper for player two
             await deployedGame.connect(secondAccount).playPaperRockScissors("paper");
-
+            
             /*
             console.log(linkBalanceOne);
             console.log(linkBalanceOne);
+            */
 
             expect(await deployedGame.mostRecentWinner()).to.equal(firstAccount.address);
-
-            expect(await deployedGame.linkBalance()).to.equal(BigNumber(8000000000000000000));
         } catch(err) {
 
         }
+
     });
-    */
 })
