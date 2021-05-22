@@ -1,4 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-ethers");
+require("hardhat-deploy-ethers");
 require("dotenv").config({path: "./.env"});
 const infuraKovan = process.env.INFURA_KOVAN;
 const kovanPrivateKeyOne = process.env.KOVAN_PRIVATE_KEY_01;
