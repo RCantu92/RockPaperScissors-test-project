@@ -4,15 +4,12 @@ pragma solidity 0.8.4;
 // PERHAPS NOT NEEDED?
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-// ONLY FOR TESTING
-import "hardhat/console.sol";
-
 contract RockPaperScissors {
 
     // IS THIS SUPPOSED TO BE IERC20 OR ERC20?
     // Creating instance of the deployed $LINK
     // token on the kovan Ethereum testnet
-    IERC20 public kovanLink = IERC20(0xa36085F69e2889c224210F603D836748e7dC0088);
+    IERC20 kovanLink = IERC20(0xa36085F69e2889c224210F603D836748e7dC0088);
 
     // KEEP THIS ONLY FOR THE TEST?
     address _mostRecentWinner;
@@ -22,11 +19,12 @@ contract RockPaperScissors {
         return _mostRecentWinner;
     }
 
-    uint internal playerNumber;
-    mapping(uint => Player) internal players;
+    // RETURN TO INTERNAL
+    uint /*internal*/ public playerNumber;
+    // RETURN TO INTERNAL
+    mapping(uint => Player) /*internal*/ public players;
 
     struct Player {
-        uint playerNumber;
         address payable playerAddress;
         string chosenItem;
     }
@@ -40,20 +38,6 @@ contract RockPaperScissors {
     }
     */
 
-    /*
-    // Approve contract to handle (kovan) $LINK
-    // on user's behalf
-    function approveLink() public {
-        // DELETE
-        console.log("Msg.sender calling approveLink() is %s", msg.sender);
-
-        kovanLink.approve(address(this), 500000000000000000);
-        approvedLink[msg.sender] = true;
-
-        kovanLink.transfer(address(this), 3000000000000000000);
-    }
-    */
-
     // Play by submitting one of the
     // following:
     // ["Rock", "Paper", "Scissors"]
@@ -62,18 +46,17 @@ contract RockPaperScissors {
     // already submitted an item, store as
     // player two.
     // Run paper rock scissors logic.
-    function playPaperRockScissors(string memory _chosenItem) public payable returns (string memory) {
+    // (TRYING CALLDATA TO CHECK IF IT UPDATES STORED ITEM)
+    function playPaperRockScissors(string /*memory*/ calldata _chosenItem) public payable {
 
         // Require players submitted appropriate item
         require(
-            areItemsAreEqual(_chosenItem, "rock") == true ||
-            areItemsAreEqual(_chosenItem, "paper") == true ||
-            areItemsAreEqual(_chosenItem, "scissors") == true,
+            areItemsEqual(_chosenItem, "rock") == true ||
+            areItemsEqual(_chosenItem, "paper") == true ||
+            areItemsEqual(_chosenItem, "scissors") == true,
             "You have either not input an appropriate item or item name not written in lowercase."
         );
 
-        // TEST TO SEE WHO MSG.SENDER IS DELETE
-        console.log(msg.sender);
         // Transfer a portion of one $LINK from player to contract address
         kovanLink.transferFrom(msg.sender, address(this), 50000000);
 
@@ -82,16 +65,15 @@ contract RockPaperScissors {
         // player one. If so, that player is
         // player two and game logic carries out.
         if(playerNumber > 0) {
-            players[playerNumber] = Player(playerNumber, payable(msg.sender), _chosenItem);
-            playerNumber ++;
-            return "You are player two";
-
+            players[playerNumber] = Player(payable(msg.sender), _chosenItem);
+            
             // Call function that has paper, rock, scissors, logic
             gameLogic();
-        } else {
-            players[playerNumber] = Player(playerNumber, payable(msg.sender), _chosenItem);
+            
             playerNumber ++;
-            return "You are player one";
+        } else {
+            players[playerNumber] = Player(payable(msg.sender), _chosenItem);
+            playerNumber ++;
         }
     }
 
@@ -99,24 +81,24 @@ contract RockPaperScissors {
     // then resets the number of players
     function gameLogic() internal {
         // Outcomes for if first player chose "rock"
-        if(areItemsAreEqual(players[0].chosenItem, "rock") == true) {
+        if(areItemsEqual(players[0].chosenItem, "rock") == true) {
             // If then player two chose "paper"
-            if(areItemsAreEqual(players[1].chosenItem, "paper") == true) {
+            if(areItemsEqual(players[1].chosenItem, "paper") == true) {
                 disperseWinnings(players[1].playerAddress);
             // If then player two chose "scissors"
-            } else if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
+            } else if(areItemsEqual(players[1].chosenItem, "scissors") == true) {
                 disperseWinnings(players[0].playerAddress);
             // If then player also chose "rock"
             } else {
                 // Tie, both players chose "rock"
             }
         // Outcomes for if first player chose "paper"
-        } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
+        } else if(areItemsEqual(players[0].chosenItem, "paper") == true) {
             // If then player two chose scissors
-            if(areItemsAreEqual(players[1].chosenItem, "scissors")) {
+            if(areItemsEqual(players[1].chosenItem, "scissors") == true) {
                 disperseWinnings(players[1].playerAddress);
             // If then player two chose "rock"
-            } else if(areItemsAreEqual(players[1].chosenItem, "rock")) {
+            } else if(areItemsEqual(players[1].chosenItem, "rock") == true) {
                 disperseWinnings(players[0].playerAddress);
             // If then player also chose "paper"
             } else {
@@ -125,10 +107,10 @@ contract RockPaperScissors {
         // Outcome for if first player chose "scissors"
         } else {
             // If then player two chose "rock"
-            if(areItemsAreEqual(players[1].chosenItem, "rock")) {
+            if(areItemsEqual(players[1].chosenItem, "rock") == true) {
                 disperseWinnings(players[1].playerAddress);
             // If then player two chose "paper"
-            } else if(areItemsAreEqual(players[0].chosenItem, "paper")) {
+            } else if(areItemsEqual(players[0].chosenItem, "paper") == true) {
                 disperseWinnings(players[0].playerAddress);
             // If then player also chose "scissors"
             } else {
@@ -144,17 +126,21 @@ contract RockPaperScissors {
         playerNumber = 0;
         // Store most recent winner
         _mostRecentWinner = _winner;
+
         // Player two wins the $LINK
         kovanLink.transferFrom(address(this), _winner, 100000000);
     }
 
-    // function that compares the
+    // Function that compares the
     // hashes of two different strings
-    function areItemsAreEqual(string memory _playerChosenItem, string memory _comparedItem) internal pure returns(bool) {
+    function areItemsEqual(string memory _playerChosenItem, string memory _comparedItem) internal pure returns(bool) {
+        return keccak256(abi.encode(_playerChosenItem)) == keccak256(abi.encode(_comparedItem));
+        /*
         if(keccak256(abi.encode(_playerChosenItem)) == keccak256(abi.encode(_comparedItem))) {
             return true;
         } else {
             return false;
         }
+        */
     }
 }

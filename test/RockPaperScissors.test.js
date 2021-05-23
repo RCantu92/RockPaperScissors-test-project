@@ -33,18 +33,14 @@ describe("Rock, Paper, Scissors contract", function() {
 
     
     it("should allow player one to win a game against player two", async function() {
-        
-        try {
-            // Submit rock for player one
-            await deployedGame.playPaperRockScissors("rock");
 
-            // Submit paper for player two
-            await deployedGame.connect(secondAccount).playPaperRockScissors("paper");
+        // Submit rock for player one
+        await deployedGame.playPaperRockScissors("paper");
 
-            expect(await deployedGame.mostRecentWinner()).to.equal(firstAccount.address);
-        } catch(err) {
+        // Submit paper for player two
+        await deployedGame.connect(secondAccount).playPaperRockScissors("rock");
 
-        }
+        expect(await deployedGame.mostRecentWinner()).to.equal(firstAccount.address);
 
     });
 })

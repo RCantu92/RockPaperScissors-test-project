@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/robertocantu/blockchain_programming/RockPaperScissors-test-project/contracts/RockPaperScissors.sol": {
-      "lastModificationDate": 1621713546439,
-      "contentHash": "743411cc45dbe59197da779610a62f75",
+      "lastModificationDate": 1621727435793,
+      "contentHash": "606169cf7f0601fd4375f24ac886deb5",
       "sourceName": "contracts/RockPaperScissors.sol",
       "solcConfig": {
         "version": "0.8.4",
