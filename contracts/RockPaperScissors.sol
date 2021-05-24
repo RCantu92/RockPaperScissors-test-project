@@ -42,7 +42,7 @@ contract RockPaperScissors {
         require(msg.sender == _mostRecentWinner);
         
         // Player two wins the $LINK
-        kovanLink.transfer(msg.sender, 50000000);
+        kovanLink.transfer(msg.sender, 5000000);
     }
 
     // Play by submitting one of the
@@ -67,7 +67,7 @@ contract RockPaperScissors {
         // If players most recent game did not result in a tie,
         // transfer a portion of one $LINK from player to contract address
         if (_playerVoucher[msg.sender] != true) {
-            kovanLink.transferFrom(msg.sender, address(this), 50000000);
+            kovanLink.transferFrom(msg.sender, address(this), 5000000);
         }
 
         // Check to see if a player has already

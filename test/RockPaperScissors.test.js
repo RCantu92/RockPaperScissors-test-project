@@ -60,7 +60,7 @@ describe("Rock, Paper, Scissors contract", function() {
         // Submit rock for player one
         await deployedGame.playPaperRockScissors("rock");
 
-        // Submit paper for player two
+        // Submit rock for player two
         await deployedGame.connect(secondAccount).playPaperRockScissors("rock");
 
         // Confirm both players received vouchers to not pay $LINK
@@ -69,12 +69,10 @@ describe("Rock, Paper, Scissors contract", function() {
         expect(await deployedGame.playerVoucher(secondAccount.address)).to.equal(true);
     });
 
-    /*
     it("should not allow the submittal of an item that is not 'rock', 'paper,' or 'scissors'", async function() {
 
         // Submit ineligible item for player one
         expect(await deployedGame.playPaperRockScissors("car")).to.throw("You have either not input an appropriate item or item name not written in lowercase.");
 
     });
-    */
 })
