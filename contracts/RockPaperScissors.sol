@@ -36,7 +36,7 @@ contract RockPaperScissors {
         require(msg.sender == _mostRecentWinner);
         
         // Player two wins the $LINK
-        kovanLink.transferFrom(address(this), msg.sender, 50000000);
+        kovanLink.transfer(msg.sender, 50000000);
     }
 
     // Play by submitting one of the
