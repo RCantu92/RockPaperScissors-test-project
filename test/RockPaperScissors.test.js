@@ -1,5 +1,6 @@
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
+const { expectRevert } = require("@openzeppelin/test-helpers");
 const { isCallTrace } = require("hardhat/internal/hardhat-network/stack-traces/message-trace");
 
 describe("Rock, Paper, Scissors contract", function() {
@@ -72,7 +73,7 @@ describe("Rock, Paper, Scissors contract", function() {
     it("should not allow the submittal of an item that is not 'rock', 'paper,' or 'scissors'", async function() {
 
         // Submit ineligible item for player one
-        expect(await deployedGame.playPaperRockScissors("car")).to.throw("You have either not input an appropriate item or item name not written in lowercase.");
+        expect(await deployedGame.playPaperRockScissors("car")).to.throw();
 
     });
 })
