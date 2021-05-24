@@ -29,7 +29,13 @@ contract RockPaperScissors {
     // Mapping that stores whether player's last
     // game resulted in a tie
     // RETURN TO INTERNAL
-    mapping(address => bool) /*internal*/ public playerVoucher;
+    mapping(address => bool) /*internal*/ public _playerVoucher;
+
+    // GETTER FUNCTION BECAUSE ETHERS WOULDN'T CALL
+    // A MAPPING
+    function playerVoucher(address _playerAddress) public view returns(bool) {
+        return _playerVoucher[_playerAddress];
+    }
     
     // Function to claim winnings
     function claimWinnings() public {
@@ -60,7 +66,7 @@ contract RockPaperScissors {
 
         // If players most recent game did not result in a tie,
         // transfer a portion of one $LINK from player to contract address
-        if (playerVoucher[msg.sender] != true) {
+        if (_playerVoucher[msg.sender] != true) {
             kovanLink.transferFrom(msg.sender, address(this), 50000000);
         }
 
@@ -157,13 +163,13 @@ contract RockPaperScissors {
         // so that next game, they
         // don't have to transfer $LINK
         // to the contract
-        playerVoucher[_playerAddress] = true;
+        _playerVoucher[_playerAddress] = true;
     }
     
     // Function to confirm players have no voucher
     // after completing legitimate game
     function removeVoucher(address _playerAddress) internal {
-        playerVoucher[_playerAddress] = false;
+        _playerVoucher[_playerAddress] = false;
     }
 
     // Function that compares the

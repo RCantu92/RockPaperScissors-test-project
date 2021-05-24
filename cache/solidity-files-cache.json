@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/robertocantu/blockchain_programming/RockPaperScissors-test-project/contracts/RockPaperScissors.sol": {
-      "lastModificationDate": 1621727435793,
-      "contentHash": "606169cf7f0601fd4375f24ac886deb5",
+      "lastModificationDate": 1621890729665,
+      "contentHash": "f5a6ffcd392ca353103d39dffc65616b",
       "sourceName": "contracts/RockPaperScissors.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -28,8 +28,7 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "hardhat/console.sol"
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
       ],
       "versionPragmas": [
         "0.8.4"

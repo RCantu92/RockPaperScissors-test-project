@@ -1,13 +1,12 @@
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
 const { isCallTrace } = require("hardhat/internal/hardhat-network/stack-traces/message-trace");
-const BigNumber = require('bignumber.js');
 
 describe("Rock, Paper, Scissors contract", function() {
 
     // Adjusting time out period for tests
     // (was erroring out at 20000ms)
-    this.timeout(100000);
+    this.timeout(1000000);
     
     // Deploy contract before testing
     before(async function() {
@@ -43,4 +42,39 @@ describe("Rock, Paper, Scissors contract", function() {
         expect(await deployedGame.mostRecentWinner()).to.equal(firstAccount.address);
 
     });
+
+    it("should allow player two to win a game against player one", async function() {
+
+        // Submit rock for player one
+        await deployedGame.playPaperRockScissors("paper");
+
+        // Submit paper for player two
+        await deployedGame.connect(secondAccount).playPaperRockScissors("scissors");
+
+        expect(await deployedGame.mostRecentWinner()).to.equal(secondAccount.address);
+
+    });
+
+    it("should handle a tie correctly", async function() {
+
+        // Submit rock for player one
+        await deployedGame.playPaperRockScissors("rock");
+
+        // Submit paper for player two
+        await deployedGame.connect(secondAccount).playPaperRockScissors("rock");
+
+        // Confirm both players received vouchers to not pay $LINK
+        // to play next game since they both tied
+        expect(await deployedGame.playerVoucher(firstAccount.address)).to.equal(true);
+        expect(await deployedGame.playerVoucher(secondAccount.address)).to.equal(true);
+    });
+
+    /*
+    it("should not allow the submittal of an item that is not 'rock', 'paper,' or 'scissors'", async function() {
+
+        // Submit ineligible item for player one
+        expect(await deployedGame.playPaperRockScissors("car")).to.throw("You have either not input an appropriate item or item name not written in lowercase.");
+
+    });
+    */
 })
